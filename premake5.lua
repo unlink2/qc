@@ -1,4 +1,4 @@
-NAME="bq"
+NAME="qc"
 
 workspace (NAME)
    configurations { "Debug", "Release" }

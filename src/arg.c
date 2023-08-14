@@ -1,8 +1,8 @@
 #include "arg.h"
-#include "libbq/config.h"
-#include "libbq/log.h"
+#include "libqc/config.h"
+#include "libqc/log.h"
 
-struct bq_config bq_args_to_config(int argc, char **argv) {
+struct qc_config qc_args_to_config(int argc, char **argv) {
   struct arg_lit *verb = NULL;
   struct arg_lit *help = NULL;
   struct arg_lit *version = NULL;
@@ -14,12 +14,12 @@ struct bq_config bq_args_to_config(int argc, char **argv) {
       help = arg_litn(NULL, "help", 0, 1, "display this help and exit"),
       version =
           arg_litn(NULL, "version", 0, 1, "display version info and exit"),
-      verb = arg_litn("v", "verbose", 0, BQ_LOG_LEVEL_DBG, "verbose output"),
+      verb = arg_litn("v", "verbose", 0, QC_LOG_LEVEL_DBG, "verbose output"),
       end = arg_end(20),
   };
 
   // output params
-  char progname[] = "bq";
+  char progname[] = "qc";
   char short_desc[] = "";
 
   // version info
@@ -45,9 +45,9 @@ struct bq_config bq_args_to_config(int argc, char **argv) {
   }
 
   if (verb->count > 0) {
-    bq_log_init(verb->count);
+    qc_log_init(verb->count);
   } else {
-    bq_log_init(BQ_LOG_LEVEL_ERROR);
+    qc_log_init(QC_LOG_LEVEL_ERROR);
   }
 
   if (nerrors > 0) {
@@ -57,7 +57,7 @@ struct bq_config bq_args_to_config(int argc, char **argv) {
     goto exit;
   }
 
-  struct bq_config cfg = bq_config_init();
+  struct qc_config cfg = qc_config_init();
 
   // map args to cfg data here
 

@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "libbq/config.h"
-#include "libbq/log.h"
+#include "libqc/config.h"
+#include "libqc/log.h"
 #include "arg.h"
 
 int main(int argc, char **argv) {
-  struct bq_config cfg = bq_args_to_config(argc, argv);
+  struct qc_config cfg = qc_args_to_config(argc, argv);
   return 0;
 }

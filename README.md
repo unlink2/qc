@@ -1,4 +1,4 @@
-# bq
+# qc
 
 ## Table of content
 
@@ -19,7 +19,7 @@ make # to compile all targets
 
 ## Usage
 
-1) Rename `bq` to the project's name in all files and folders 
+1) Rename `qc` to the project's name in all files and folders 
 
 ## License
 

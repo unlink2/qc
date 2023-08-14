@@ -1,4 +1,4 @@
-#include "libbq/test/test.h"
+#include "libqc/test/test.h"
 
 /* A test case that does nothing and succeeds. */
 static void null_test_success(void **state) { (void)state; /* unused */ }

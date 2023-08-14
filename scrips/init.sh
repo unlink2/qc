@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # rename to project specific values
-NAME="bq"
-CONST="BQ"
-STRUCT="Bq"
-FN="bq"
+NAME="qc"
+CONST="QC"
+STRUCT="Qc"
+FN="qc"
 
 # will be replaced
 TMPL_NAME="__TEMPLATE__"
