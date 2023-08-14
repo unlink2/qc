@@ -35,6 +35,6 @@ struct qc_op {
   enum qc_fmt fmt;
 };
 
-void bq_ops_sort(struct bq_op *ops, size_t len) {}
+void bq_ops_sort(struct qc_op *ops, size_t len) {}
 
 #endif
