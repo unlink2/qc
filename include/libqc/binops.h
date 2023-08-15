@@ -3,26 +3,26 @@
 
 #include <stddef.h>
 
-enum qc_ops {
+enum qc_bin_ops {
   QC_OP_INT,
   QC_OP_FLOAT,
   QC_OP_PTR,
   QC_OP_STR,
 };
 
-enum qc_endianess {
+enum qc_bin_endianess {
   QC_LITTLE,
   QC_BIG,
 };
 
-enum qc_fmt {
+enum qc_bin_fmt {
   QC_DEFAULT,
   QC_DECIMAL,
   QC_HEX,
   QC_BIN,
 };
 
-struct qc_op {
+struct qc_bin_op {
   // offset of data
   size_t at;
   // lenght in bytes
@@ -30,11 +30,11 @@ struct qc_op {
   // how often to apply this operation
   size_t amount;
 
-  enum qc_ops type;
-  enum qc_endianess endianess;
-  enum qc_fmt fmt;
+  enum qc_bin_ops type;
+  enum qc_bin_endianess endianess;
+  enum qc_bin_fmt fmt;
 };
 
-void bq_ops_sort(struct qc_op *ops, size_t len) {}
+void bq_ops_sort(struct qc_bin_op *ops, size_t len) {}
 
 #endif
