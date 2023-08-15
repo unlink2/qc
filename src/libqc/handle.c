@@ -4,32 +4,52 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct qc_handle qc_handle_init(void) {
-  struct qc_handle handle;
-  memset(&handle, 0, sizeof(handle));
-
-  return handle;
+struct qc_strlst qc_strlst_init(void) {
+  struct qc_strlst self;
+  memset(&self, 0, sizeof(self));
+  return self;
 }
 
-void qc_handle_add_link(struct qc_handle *self, const char *link) {
-  size_t new_len = self->links_len + 1;
-  char **new_links = realloc(self->links, new_len);
+void qc_strlst_push(struct qc_strlst *self, const char *link) {
+  size_t new_len = self->len + 1;
+  char **new_links = realloc(self->vals, new_len);
 
   if (!new_links) {
     qc_errno();
     return;
   }
 
-  self->links_len = new_len;
-  self->links = new_links;
-  self->links[self->links_len - 1] = strdup(link);
+  self->len = new_len;
+  self->vals = new_links;
+  self->vals[self->len - 1] = strdup(link);
+}
+
+void qc_strlst_free(struct qc_strlst *self) {
+  if (self->vals) {
+    for (size_t i = 0; i < self->len; i++) {
+      free(self->vals[i]);
+    }
+    free(self->vals);
+  }
+}
+
+struct qc_handle qc_handle_init(void) {
+  struct qc_handle handle;
+  memset(&handle, 0, sizeof(handle));
+
+  handle.words = qc_strlst_init();
+  handle.links = qc_strlst_init();
+
+  handle.max_link_depth = QC_MAX_LINK_DEPTH_INF;
+
+  return handle;
+}
+
+void qc_handle_add_link(struct qc_handle *self, const char *link) {
+  qc_strlst_push(&self->links, link);
 }
 
 void qc_handle_free(struct qc_handle *self) {
-  if (self->links) {
-    for (size_t i = 0; i < self->links_len; i++) {
-      free(self->links[i]);
-    }
-    free(self->links);
-  }
+  qc_strlst_free(&self->links);
+  qc_strlst_free(&self->words);
 }
