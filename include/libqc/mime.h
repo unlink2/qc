@@ -14,6 +14,7 @@ struct qc_mime {
 struct qc_mime qc_mime_determine(struct qc_handle *handle, const char *path,
                                  const char *content);
 
+// TODO: how do we register mime types?
 void qc_mime_register(struct qc_handle *handle);
 
 void qc_mime_free(const struct qc_mime *self);

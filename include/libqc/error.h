@@ -13,19 +13,18 @@
 
 // Possible error types.
 // Some may or may not require special error info
-enum qc_error {
-  QC_OK = 0,
-  // errno is stored in err_detail
-  QC_ERRNO
-};
+enum qc_error { QC_OK = 0, QC_ERRNO };
 
-#define qc_errno()                                                           \
-  { qc_err_set(QC_ERRNO); }
-
-#define qc_err_fset(err, ...)                                                \
+#define qc_errno()                                                             \
   {                                                                            \
-    qc_err_set((err));                                                       \
-    qc_error(__VA_ARGS__);                                                   \
+    qc_error("%s\n", strerror(errno));                                         \
+    qc_err_set(QC_ERRNO);                                                      \
+  }
+
+#define qc_err_fset(err, ...)                                                  \
+  {                                                                            \
+    qc_err_set((err));                                                         \
+    qc_error(__VA_ARGS__);                                                     \
   }
 
 // sets err to a value

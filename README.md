@@ -1,5 +1,8 @@
 # qc
 
+Quick Crawl is a simple zero-configuration local web or file system crawler.
+It simply attempts to find all possible links it can discover and dumps the resulting files to stdout.
+
 ## Table of content
 
 - [Installation](#Installation)
@@ -27,3 +30,12 @@ This program is distributed under the terms of the MIT License.
 
 ## Contributing
 
+## TODO
+- Allow file system crawling
+- Allow http crawling
+- Filter and tag files based on
+    - mime type
+    - file signatures 
+    - keywords
+    - data snippets
+    - path
