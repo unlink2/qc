@@ -49,6 +49,12 @@ void qc_handle_add_link(struct qc_handle *self, const char *link) {
   qc_strlst_push(&self->links, link);
 }
 
+void qc_handle_crawl(struct qc_handle *self, int depth) {
+  for (size_t i = 0; i < self->links.len; i++) {
+    self->read_entry(self, self->links.vals[i]);
+  }
+}
+
 void qc_handle_free(struct qc_handle *self) {
   qc_strlst_free(&self->links);
   qc_strlst_free(&self->words);

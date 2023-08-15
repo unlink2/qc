@@ -5,16 +5,14 @@
 
 #define QC_MAX_LINK_DEPTH_INF -1
 
-struct qc_handle;
-
 // Generic function that reads an entry
-typedef char (*qc_read_entry)(const struct qc_handle *handle, const char *path);
+typedef char (*qc_read_entry)(const void *handle, const char *path);
 
 // Attempts to find links in the read file
 // adds them to links list in handle
 // Note: data may be a partial file and this may be called more than once per
 // path
-typedef void (*qc_find_links)(const struct qc_handle *handle, const char *path,
+typedef void (*qc_find_links)(const void *handle, const char *path,
                               const char *data, size_t data_len);
 
 struct qc_strlst {
