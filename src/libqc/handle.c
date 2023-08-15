@@ -49,9 +49,14 @@ void qc_handle_add_link(struct qc_handle *self, const char *link) {
   qc_strlst_push(&self->links, link);
 }
 
-void qc_handle_crawl(struct qc_handle *self, int depth) {
-  for (size_t i = 0; i < self->links.len; i++) {
-    self->read_entry(self, self->links.vals[i]);
+void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth) {
+  const size_t buffer_len = 128;
+  char buffer[buffer_len];
+  const char *link = self->links.vals[link_idx];
+  while (self->read_entry(self, link, buffer, buffer_len) != NULL) {
+    if (depth == QC_MAX_LINK_DEPTH_INF || depth < self->max_link_depth) {
+      self->find_links(self, link, buffer, buffer_len);
+    }
   }
 }
 
