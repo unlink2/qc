@@ -21,30 +21,51 @@ void qc_handle_add_link(struct qc_handle *self, const char *link) {
   qc_strlst_push(&self->links, link);
 }
 
+// read - if mime type->meta is NULL it will deptermine a mime type, if the mime
+// type should be filtered it will filter and abort reading by returning -1
+int qc_handle_read(struct qc_handle *self, const char *link, char *buffer,
+                   size_t buffer_len, int depth, struct qc_mime *mime_type) {
+  int read = self->read_entry(self, link, buffer, buffer_len);
+
+  if (mime_type->meta == NULL) {
+    *mime_type = qc_mime_determine(self, link, buffer, read);
+  }
+
+  if (!qc_handle_accepts_mime(self, mime_type)) {
+    return -1;
+  }
+
+  if (depth == QC_MAX_LINK_DEPTH_INF || depth < self->max_link_depth) {
+    self->find_links(self, link, buffer, buffer_len);
+  }
+
+  mime_type->print(self, link, buffer, buffer_len);
+
+  return read;
+}
+
 void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth) {
-  const size_t buffer_len = 128;
+  const size_t buffer_len = 1024;
   char buffer[buffer_len];
   const char *link = self->links.vals[link_idx];
 
-  // link length before crawl
-  // if crawl fails we simply roll back until here
-  // and free all new links that were found
-  // This is done becuas the mime type cannot be known
-  // for certain before the entire file is processed,
-  // but we also want to attempt finding links
-  // at the same time
-  size_t link_len_before = self->links.len;
+  int read = 0;
 
-  // we attempt to determine the mime type as we go
-  // some mime type filters have a higher priority than others
-  // and therefore should take precendence
-  struct qc_mime mime_type;
+  // attempt to determine the mime type based on the first read
+  // all subsequent reads are not considered for mime type filters
+  // but they may still have processing steps applied.
+  struct qc_mime mime_type = qc_mime_init();
 
-  while (self->read_entry(self, link, buffer, buffer_len) != NULL) {
-    if (depth == QC_MAX_LINK_DEPTH_INF || depth < self->max_link_depth) {
-      self->find_links(self, link, buffer, buffer_len);
-    }
+  while ((read = qc_handle_read(self, link, buffer, buffer_len, depth,
+                                &mime_type)) != -1) {
   }
+
+  qc_mime_free(&mime_type);
+}
+
+// TODO: implement filter
+bool qc_handle_accepts_mime(struct qc_handle *self, struct qc_mime *mime) {
+  return true;
 }
 
 void qc_handle_free(struct qc_handle *self) {
