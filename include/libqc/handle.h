@@ -2,6 +2,7 @@
 #define HANDLE_H_
 
 #include <stddef.h>
+#include "libqc/vec.h"
 
 #define QC_MAX_LINK_DEPTH_INF -1
 
@@ -19,15 +20,6 @@ typedef char *(*qc_read_entry)(const void *handle, const char *path,
 // because of partial calls
 typedef void (*qc_find_links)(const void *handle, const char *path,
                               const char *data, size_t data_len);
-
-struct qc_strlst {
-  char **vals;
-  size_t len;
-};
-
-struct qc_strlst qc_strlst_init(void);
-void qc_strlst_push(struct qc_strlst *self, const char *link);
-void qc_strlst_free(struct qc_strlst *self);
 
 struct qc_handle {
   struct qc_strlst words;
