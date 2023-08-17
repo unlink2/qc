@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "libqc/vec.h"
 #include "libqc/sink.h"
+#include <regex.h>
 
 struct qc_handle;
 struct qc_filter;
@@ -35,6 +36,7 @@ struct qc_filter {
       const uint8_t *bval;
       size_t blen;
     };
+    regex_t reg;
     qc_filter_cb custom;
   };
   struct qc_sink_lst sinks;
@@ -43,7 +45,10 @@ struct qc_filter {
 struct qc_filter qc_filter_init(enum qc_filters type, const char *name);
 
 bool qc_filter_is_included(struct qc_filter *self, const char *path,
-                           const char *content);
+                           const char *content, size_t content_len);
+
+int qc_filter_sinks_exec(struct qc_filter *self, const char *path,
+                         const char *content, size_t content_len);
 
 void qc_filter_free(struct qc_filter *self);
 
