@@ -2,6 +2,7 @@
 #include "libqc/error.h"
 #include "libqc/log.h"
 #include "libqc/test/vec.h"
+#include "libqc/test/filter.h"
 
 static int test_setup(void **state) {
   qc_err_set(QC_OK);
@@ -12,8 +13,8 @@ static int test_setup(void **state) {
 int main(int arc, char **argv) {
   const struct CMUnitTest tests[] = {
       cmocka_unit_test_setup(test_vec, test_setup),
+      cmocka_unit_test_setup(test_filter, test_setup),
   };
 
   return cmocka_run_group_tests(tests, NULL, NULL);
 }
-

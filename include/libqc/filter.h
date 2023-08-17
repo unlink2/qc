@@ -43,9 +43,10 @@ struct qc_filter {
 };
 
 struct qc_filter qc_filter_init(enum qc_filters type, const char *name);
+struct qc_filter qc_filter_path_pattern(const char *name, const char *expr);
 
-bool qc_filter_is_included(struct qc_filter *self, const char *path,
-                           const char *content, size_t content_len);
+bool qc_filter_includes(struct qc_filter *self, const char *path,
+                        const char *content, size_t content_len);
 
 int qc_filter_sinks_exec(struct qc_filter *self, const char *path,
                          const char *content, size_t content_len);

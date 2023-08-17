@@ -23,8 +23,8 @@ struct qc_filter qc_filter_path_pattern(const char *name, const char *expr) {
   return self;
 }
 
-bool qc_filter_is_included(struct qc_filter *self, const char *path,
-                           const char *content, size_t content_len) {
+bool qc_filter_includes(struct qc_filter *self, const char *path,
+                        const char *content, size_t content_len) {
   switch (self->type) {
   case QC_FILTER_PATH_PATTERN:
     return regexec(&self->reg, path, 0, NULL, 0) != REG_NOMATCH;
@@ -53,7 +53,7 @@ void qc_filter_free(struct qc_filter *self) {
   qc_sink_lst_free(&self->sinks);
 
   switch (self->type) {
-  case QC_FILTER_EXT:
+  case QC_FILTER_PATH_PATTERN:
     regfree(&self->reg);
     break;
   default:
