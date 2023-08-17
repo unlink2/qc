@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "libqc/vec.h"
-#include "libqc/fmt.h"
+#include "libqc/sink.h"
 
 struct qc_handle;
 struct qc_filter;
@@ -32,7 +32,7 @@ struct qc_filter {
       size_t blen;
     };
   };
-  struct qc_fmt_lst fmts;
+  struct qc_sink_lst sinks;
 };
 
 struct qc_filter qc_filter_init(enum qc_filters type, const char *name);
