@@ -10,6 +10,9 @@
 struct qc_handle;
 struct qc_filter;
 
+typedef bool (*qc_filter_cb)(struct qc_filter *filter, const char *path,
+                             const char *content);
+
 enum qc_filters {
   QC_FILTER_EXT,
   QC_FILTER_IS_TXT,
@@ -19,6 +22,7 @@ enum qc_filters {
   QC_FILTER_STARTS_WITH_TEXT,
   QC_FILTER_STARTS_WITH_BIN,
   QC_FILTER_PATH_PATTERN,
+  QC_FILTER_CUSTOM,
 };
 
 struct qc_filter {
@@ -31,6 +35,7 @@ struct qc_filter {
       const uint8_t *bval;
       size_t blen;
     };
+    qc_filter_cb custom;
   };
   struct qc_sink_lst sinks;
 };
