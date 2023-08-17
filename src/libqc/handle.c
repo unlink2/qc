@@ -1,7 +1,6 @@
 #include "libqc/handle.h"
 #include "libqc/error.h"
 #include "libqc/log.h"
-#include "libqc/mime.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -24,22 +23,12 @@ void qc_handle_add_link(struct qc_handle *self, const char *link) {
 // read - if mime type->meta is NULL it will deptermine a mime type, if the mime
 // type should be filtered it will filter and abort reading by returning -1
 int qc_handle_read(struct qc_handle *self, const char *link, char *buffer,
-                   size_t buffer_len, int depth, struct qc_mime *mime_type) {
+                   size_t buffer_len, int depth) {
   int read = self->read_entry(self, link, buffer, buffer_len);
-
-  if (mime_type->meta == NULL) {
-    *mime_type = qc_mime_determine(self, link, buffer, read);
-  }
-
-  if (!qc_handle_accepts_mime(self, mime_type)) {
-    return -1;
-  }
 
   if (depth == QC_MAX_LINK_DEPTH_INF || depth < self->max_link_depth) {
     self->find_links(self, link, buffer, buffer_len);
   }
-
-  mime_type->print(self, link, buffer, buffer_len);
 
   return read;
 }
@@ -51,21 +40,8 @@ void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth) {
 
   int read = 0;
 
-  // attempt to determine the mime type based on the first read
-  // all subsequent reads are not considered for mime type filters
-  // but they may still have processing steps applied.
-  struct qc_mime mime_type = qc_mime_init();
-
-  while ((read = qc_handle_read(self, link, buffer, buffer_len, depth,
-                                &mime_type)) != -1) {
+  while ((read = qc_handle_read(self, link, buffer, buffer_len, depth)) != -1) {
   }
-
-  qc_mime_free(&mime_type);
-}
-
-// TODO: implement filter
-bool qc_handle_accepts_mime(struct qc_handle *self, struct qc_mime *mime) {
-  return true;
 }
 
 void qc_handle_free(struct qc_handle *self) {

@@ -39,8 +39,6 @@ void qc_handle_add_link(struct qc_handle *self, const char *link);
 void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth);
 void qc_handle_crawl_all(struct qc_handle *self);
 
-bool qc_handle_accepts_mime(struct qc_handle *self, struct qc_mime *mime_type);
-
 void qc_handle_free(struct qc_handle *self);
 
 #endif
