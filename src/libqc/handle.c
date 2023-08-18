@@ -57,6 +57,9 @@ void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth) {
 void qc_handle_crawl_all(struct qc_handle *self) {
   for (size_t i = 0; i < self->links.len; i++) {
     qc_handle_crawl(self, i, self->links.vals[i].depth);
+    if (qc_err()) {
+      return;
+    }
   }
 }
 
