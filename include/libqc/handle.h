@@ -1,6 +1,7 @@
 #ifndef HANDLE_H_
 #define HANDLE_H_
 
+#include "libqc/link.h"
 #include <stddef.h>
 #include "libqc/vec.h"
 
@@ -13,6 +14,8 @@ struct qc_mime;
 // it should prefer using the buffer to store the result,
 // but if it is not possible it may also
 // store it in a tmpfile which then is mmaped
+// if resources need to be freed as a result the callback may use
+// a qc_entry_free call to free them
 typedef const char *(*qc_entry_read)(const void *handle, const char *path,
                                      char *buffer, size_t buffer_len,
                                      size_t *total_len, void *udata);
@@ -30,11 +33,14 @@ typedef void (*qc_entry_free)(const void *handle, const char *buffer,
 typedef void (*qc_links_find)(const void *handle, const char *path,
                               const char *data, size_t data_len);
 
+// a handle is an indipendant
+// lookup task for all links in its link list
 struct qc_handle {
   struct qc_strlst words;
   // TODO: have a way to figure out if a link has already been scanned
-  // previosuly
-  struct qc_strlst links;
+  // previosuly. Maybe this can simply be solved using depth
+  // and re-parsing already found links anyway...
+  struct qc_link_lst links;
   int max_link_depth;
 
   struct qc_strlst accepts_mime;
@@ -46,7 +52,7 @@ struct qc_handle {
 };
 
 struct qc_handle qc_handle_init(void);
-void qc_handle_add_link(struct qc_handle *self, const char *link);
+void qc_handle_add_link(struct qc_handle *self, const char *link, int depth);
 void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth);
 void qc_handle_crawl_all(struct qc_handle *self);
 
