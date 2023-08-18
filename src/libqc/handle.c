@@ -22,25 +22,35 @@ void qc_handle_add_link(struct qc_handle *self, const char *link) {
 
 // read - if mime type->meta is NULL it will deptermine a mime type, if the mime
 // type should be filtered it will filter and abort reading by returning -1
-int qc_handle_read(struct qc_handle *self, const char *link, char *buffer,
-                   size_t buffer_len, int depth) {
-  int read = self->read_entry(self, link, buffer, buffer_len);
+const char *qc_handle_read(struct qc_handle *self, const char *link,
+                           char *buffer, size_t buffer_len, size_t *total_len,
+                           int depth) {
+  const char *result =
+      self->read_entry(self, link, buffer, buffer_len, total_len);
 
   if (depth == QC_MAX_LINK_DEPTH_INF || depth < self->max_link_depth) {
     self->find_links(self, link, buffer, buffer_len);
   }
 
-  return read;
+  return result;
 }
 
 void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth) {
-  const size_t buffer_len = 1024;
-  char buffer[buffer_len];
+  const size_t static_buffer_len = 4096;
+  char buffer[static_buffer_len];
   const char *link = self->links.vals[link_idx];
 
-  int read = 0;
+  size_t total_len = 0;
+  const char *result =
+      qc_handle_read(self, link, buffer, static_buffer_len, &total_len, depth);
 
-  while ((read = qc_handle_read(self, link, buffer, buffer_len, depth)) != -1) {
+  if (!result) {
+    qc_err_fset(QC_ERR_IO, "IO Error: Failed to read %s\n", link);
+    return;
+  }
+
+  if (self->free_entry && result != buffer) {
+    self->free_entry(self, result);
   }
 }
 

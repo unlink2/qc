@@ -13,7 +13,7 @@
 
 // Possible error types.
 // Some may or may not require special error info
-enum qc_error { QC_OK = 0, QC_ERRNO };
+enum qc_error { QC_OK = 0, QC_ERR_IO, QC_ERRNO };
 
 #define qc_errno()                                                             \
   {                                                                            \
