@@ -24,9 +24,9 @@ void qc_handle_add_link(struct qc_handle *self, const char *link) {
 // type should be filtered it will filter and abort reading by returning -1
 const char *qc_handle_read(struct qc_handle *self, const char *link,
                            char *buffer, size_t buffer_len, size_t *total_len,
-                           int depth) {
+                           void **udata, int depth) {
   const char *result =
-      self->read_entry(self, link, buffer, buffer_len, total_len);
+      self->read_entry(self, link, buffer, buffer_len, total_len, udata);
 
   if (depth == QC_MAX_LINK_DEPTH_INF || depth < self->max_link_depth) {
     self->find_links(self, link, buffer, buffer_len);
@@ -36,13 +36,14 @@ const char *qc_handle_read(struct qc_handle *self, const char *link,
 }
 
 void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth) {
+  void *udata = NULL;
   const size_t static_buffer_len = 4096;
   char buffer[static_buffer_len];
   const char *link = self->links.vals[link_idx];
 
   size_t total_len = 0;
-  const char *result =
-      qc_handle_read(self, link, buffer, static_buffer_len, &total_len, depth);
+  const char *result = qc_handle_read(self, link, buffer, static_buffer_len,
+                                      &total_len, &udata, depth);
 
   if (!result) {
     qc_err_fset(QC_ERR_IO, "IO Error: Failed to read %s\n", link);
@@ -50,7 +51,7 @@ void qc_handle_crawl(struct qc_handle *self, size_t link_idx, int depth) {
   }
 
   if (self->free_entry && result != buffer) {
-    self->free_entry(self, result);
+    self->free_entry(self, result, &udata);
   }
 }
 
