@@ -12,7 +12,7 @@ struct qc_handle;
 struct qc_filter;
 
 typedef bool (*qc_filter_cb)(struct qc_filter *filter, const char *path,
-                             const char *content);
+                             const char *content, void *udata);
 
 enum qc_filters {
   QC_FILTER_EXT,
@@ -40,6 +40,7 @@ struct qc_filter {
     qc_filter_cb custom;
   };
   struct qc_sink_lst sinks;
+  void *udata;
 };
 
 struct qc_filter qc_filter_init(enum qc_filters type, const char *name);

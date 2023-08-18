@@ -11,7 +11,8 @@ struct qc_filter;
 struct qc_sink;
 
 typedef int (*qc_sink_cb)(struct qc_sink *sink, const char *path,
-                          const char *content, size_t content_len);
+                          const char *content, size_t content_len, void *udata);
+
 int qc_sink_null(struct qc_sink *sink, const char *path, const char *content,
                  size_t content_len);
 
@@ -35,6 +36,7 @@ struct qc_sink {
     FILE *fout;
     qc_sink_cb cb;
   };
+  void *udata;
 };
 
 struct qc_sink qc_sink_init(enum qc_sinks type, const char *name);

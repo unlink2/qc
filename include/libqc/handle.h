@@ -15,11 +15,11 @@ struct qc_mime;
 // store it in a tmpfile which then is mmaped
 typedef const char *(*qc_entry_read)(const void *handle, const char *path,
                                      char *buffer, size_t buffer_len,
-                                     size_t *total_len, void **udata);
+                                     size_t *total_len, void *udata);
 
 // optional cleanup call for read functions that allocate resources
 typedef void (*qc_entry_free)(const void *handle, const char *buffer,
-                              void **udata);
+                              void *udata);
 
 // Attempts to find links in the read file
 // adds them to links list in handle
@@ -42,6 +42,7 @@ struct qc_handle {
   qc_entry_read read_entry;
   qc_entry_free free_entry;
   qc_links_find find_links;
+  void *udata;
 };
 
 struct qc_handle qc_handle_init(void);

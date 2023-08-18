@@ -53,7 +53,7 @@ int qc_sink_exec(struct qc_sink *self, const char *path, const char *content,
   case QC_SINK_WRITE_CONTENT:
     return qc_sink_write_content(self, path, content, content_len);
   case QC_SINK_CUSTOM:
-    return self->cb(self, path, content, content_len);
+    return self->cb(self, path, content, content_len, self->udata);
   }
   return -1;
 }
